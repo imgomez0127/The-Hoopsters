@@ -1,19 +1,21 @@
 import pygame
-
+from pygame.image import load
 class Helga(pygame.sprite.Sprite):
 
     def __init__(self,screen_width=1920):
         super().__init__()
-        self.__image = pygame.image.load_image("assets/helga.png")
+        self.__image = load("assets/NAOMI.png")
         self.__health = 5
         self.__height = 300
         self.__width = 300
         self.__horizontal_coordinate = 0
-        self.__vertical_coordinate = 0
-        self.__direction = -1 #-1 is left 1 is right it will be a multiple to find the next screen pos
+        self.__vertical_coordinate = 600
+        self.__direction = 1 #-1 is left 1 is right it will be a multiple to find the next screen pos
         self.__min_width = 0
-        self.__max_width = screen_width-width
+        self.__max_width = screen_width-self.__width
         self.__speed = 25
+        self.__animations = ["assets/NAOMIWALK1.png","assets/NAOMIWALK2.png"]
+        self.__animation_to_load = 1
 
     @property
     def height(self):
@@ -55,19 +57,20 @@ class Helga(pygame.sprite.Sprite):
     def direction(self,direction):
         self.__direction = direction
 
-    def check_direction_for_next_move():
-        if self.__horizontal_coordinate == 0:
+    def check_direction_for_next_move(self):
+        if self.__horizontal_coordinate <= 0:
             self.__direction = 1
-        if self.__horizontal_coordinate == self.__max_width:
+        if self.__horizontal_coordinate >= self.__max_width:
             self.__direction = -1
 
     def move(self):
         self.check_direction_for_next_move()
-        self.__horizontal_coordinate = horizontal_coordinate + (self.direction * self.__speed)
+        self.__horizontal_coordinate = self.__horizontal_coordinate + (self.direction * self.__speed)
     
     def render(self):
-        pygame.display.get_surface.blit(
-            self.__image,
+        render_image = load(self.__animations[self.__animation_to_load]) if self.direction == 1 else pygame.transform.flip(load(self.__animations[self.__animation_to_load]), True, False)
+        pygame.display.get_surface().blit(
+            render_image,
             (
                 self.horizontal_coordinate,
                 self.vertical_coordinate,
@@ -75,3 +78,5 @@ class Helga(pygame.sprite.Sprite):
                 self.height
             )
         )
+        self.__animation_to_load += 1
+        self.__animation_to_load %= 2
