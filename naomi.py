@@ -1,6 +1,11 @@
 import pygame
 from pygame.image import load
 import os
+def image_path(file_name):
+    return os.path.join("assets",file_name)
+def reverse_image(image):
+            return pygame.transform.flip(image, True, False)
+
 class Naomi:
 
     def __init__(self,screen_width=1920):
@@ -22,16 +27,16 @@ class Naomi:
         self.jumping_animation = self.idle_image
         self.previous_key = None
         self.populate_walking_animations_dictionary()
+        self.create_jumping_animation()
         self.is_idle = True
+        self.facing_right = True
     
-    def populate_walking_animations_dictionary(self):
-        def image_path(file_name):
-            return os.path.join("assets",file_name)
-        def reverse_image(image):
-            return pygame.transform.flip(image, True, False)
+    def create_jumping_animation(self):
+        self. jumping_animation = [load(os.path.join("assets/JUMPY",image)) for image in sorted(os.listdir("assets/JUMPY"))]
 
+    def populate_walking_animations_dictionary(self):
         self.animations[pygame.K_d] = [load(image_path("NAOMIWALK1.png")),load(image_path("NAOMIWALK2.png"))]
-        self.animations[pygame.K_a] = [reverse_image(load(image_path("NAOMIWALK1.png"))),reverse_image(load(image_path("NAOMIWALK2.png")))]
+        self.animations[pygame.K_a] = [load(image_path("NAOMIWALK1.png")),load(image_path("NAOMIWALK2.png"))]
         
 
     def react_to_keypress(self):
@@ -44,6 +49,7 @@ class Naomi:
             self.horizontal_coordinate = max(0,self.horizontal_coordinate-self.speed)
             self.render_image = self.animations[pygame.K_a][self.action_frames%2]
             self.action_frames += 1
+            self.facing_right = False
         if keys[pygame.K_d]:
             if self.previous_key != pygame.K_d and self.previous_key not in jumping:
                 self.previous_key = pygame.K_d
@@ -51,6 +57,7 @@ class Naomi:
             self.horizontal_coordinate= min(self.max_width,self.horizontal_coordinate+self.speed)
             self.render_image = self.animations[pygame.K_d][self.action_frames%2]
             self.action_frames += 1
+            self.facing_right = True
         if self.is_jumping == False:
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
                 self.is_jumping = True
@@ -68,17 +75,16 @@ class Naomi:
                 self.action_frames = 0
         self.is_idle = True
         for key in keys:
-            self.is_idle &= key
+            self.is_idle &= not key
+
     def render(self):
         render_vector = (self.horizontal_coordinate,(self.vertical_coordinate+self.ground),self.height,self.width)
-        if self.is_jumping:
+        if self.is_idle:
+            self.render_image = self.idle_image
+        self.render_image = self.render_image if self.facing_right else reverse_image(self.render_image)
+        if self.is_jumping: 
             pygame.display.get_surface().blit(
-                self.jumping_animation,
-                render_vector
-            )
-        elif self.is_idle:
-            pygame.display.get_surface().blit(
-                self.idle_image,
+                self.jumping_animation[(self.jump_counter-1)+5] if self.facing_right else reverse_image(self.jumping_animation[(self.jump_counter-1)+5]),
                 render_vector
             )
         else:
