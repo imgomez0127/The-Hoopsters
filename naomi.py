@@ -1,12 +1,13 @@
 import pygame
 from pygame.image import load
 import os
+from bullet import Bullet 
 def image_path(file_name):
     return os.path.join("assets",file_name)
 def reverse_image(image):
             return pygame.transform.flip(image, True, False)
 
-class Naomi:
+class Naomi(pygame.sprite.Sprite):
 
     def __init__(self,screen_width=1920):
         self.idle_image = load("assets/NAOMI.png")
@@ -14,13 +15,13 @@ class Naomi:
         self.animations = {}
         self.health = 5
         self.height = 300
-        self.width = 300
+        self.width = 250
         self.horizontal_coordinate = 0
         self.ground = 600
         self.vertical_coordinate = 0
         self.min_width = 0
         self.max_width = screen_width-self.width
-        self.speed = 25
+        self.speed = 30
         self.is_jumping = False
         self.action_frames = 0
         self.jump_counter = 5
@@ -39,7 +40,7 @@ class Naomi:
         self.animations[pygame.K_a] = [load(image_path("NAOMIWALK1.png")),load(image_path("NAOMIWALK2.png"))]
         
 
-    def react_to_keypress(self):
+    def react_to_keypress(self,bullets):
         keys = pygame.key.get_pressed()
         jumping = [pygame.K_SPACE,pygame.K_w]
         if keys[pygame.K_a]:
@@ -58,15 +59,21 @@ class Naomi:
             self.render_image = self.animations[pygame.K_d][self.action_frames%2]
             self.action_frames += 1
             self.facing_right = True
+        if keys[pygame.K_s]:
+            bullets.append(
+                Bullet(
+                    horizontal_coordinate = self.horizontal_coordinate,
+                    vertical_coordinate = self.vertical_coordinate+self.ground+130,
+                    direction = 1 if self.facing_right else -1 
+                )
+            )
         if self.is_jumping == False:
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
                 self.is_jumping = True
-            if keys[pygame.K_s]:
-                self.vertical_coordinate -= self.height/2
             else:
                 self.vertical_coordinate = 0
         else:
-            self.vertical_coordinate += 7 * ((self.jump_counter ** 2) * (1 - 2 * (self.jump_counter > 0)))
+            self.vertical_coordinate += 10 * ((self.jump_counter ** 2) * (1 - 2 * (self.jump_counter > 0)))
             self.jump_counter -= 1 
             if self.jump_counter == -6:
                 self.jump_counter = 5
