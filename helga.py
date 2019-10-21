@@ -5,7 +5,7 @@ class Helga(pygame.sprite.Sprite):
     def __init__(self,screen_width=1920):
         super().__init__()
         self.__image = load("assets/NAOMI.png")
-        self.__health = 30
+        self.__health = 10
         self.__height = 300
         self.__width = 200
         self.__horizontal_coordinate = 1600

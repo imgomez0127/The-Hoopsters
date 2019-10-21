@@ -1,6 +1,6 @@
 import pygame
 from pygame.image import load
-class Bullet(pygame.sprite.Sprite):
+class Hoop(pygame.sprite.Sprite):
     
     def __init__(self,horizontal_coordinate=0,vertical_coordinate=0,direction=1):
         self.horizontal_coordinate = horizontal_coordinate
