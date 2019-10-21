@@ -1,4 +1,5 @@
 import pygame
+from pygame.image import load
 import os 
 from helga import Helga
 from naomi import Naomi
@@ -35,24 +36,29 @@ class main:
             if event.type == pygame.QUIT:
                 return True
         return False
-
     def run_game(self):
         game_is_running = True
         while game_is_running:
             pygame.time.delay(30)
             game_is_running = not self.check_if_game_should_exit()
             self.game_is_running = self.check_if_game_should_exit()
-            self.helga.move()
-            self.naomi.react_to_keypress(self.bullets)
-            self.move_bullets()
-            self.check_if_helga_got_hit()
             self.win.blit(self.background_image,(0,0))
             if self.helga.health > 0:
+                self.helga.move()
+                self.naomi.react_to_keypress(self.bullets)
+                self.move_bullets()
+                self.check_if_helga_got_hit()
                 self.helga.render()
-            self.naomi.render()
-            self.render_bullets()
-            self.remove_bullets()        
+                self.naomi.render(False)
+                self.render_bullets()
+                self.remove_bullets()        
+            else:
+                self.win.blit(load("assets/mitsuwa.png"),(800,475,300,300))
+                self.naomi.horizontal_coordinate = 600
+                self.naomi.render(True)
+
             pygame.display.update()
+
     
 if __name__ == "__main__":
     main().run_game()

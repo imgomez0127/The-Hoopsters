@@ -84,7 +84,10 @@ class Naomi(pygame.sprite.Sprite):
         for key in keys:
             self.is_idle &= not key
 
-    def render(self):
+    def move(self):
+        self.horizontal_coordinate = self.horizontal_coordinate + self.speed
+
+    def render(self,is_done):
         render_vector = (self.horizontal_coordinate,(self.vertical_coordinate+self.ground),self.height,self.width)
         if self.is_idle:
             self.render_image = self.idle_image
@@ -95,6 +98,8 @@ class Naomi(pygame.sprite.Sprite):
                 render_vector
             )
         else:
+            if is_done:
+                self.render_image = self.idle_image
             pygame.display.get_surface().blit(
                 self.render_image,
                 render_vector
