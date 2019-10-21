@@ -4,7 +4,6 @@ class Helga(pygame.sprite.Sprite):
 
     def __init__(self,screen_width=1920):
         super().__init__()
-        self.__image = load("assets/NAOMI.png")
         self.__health = 10
         self.__height = 300
         self.__width = 200
@@ -98,7 +97,7 @@ class Helga(pygame.sprite.Sprite):
 
     def got_hit(self,game_item):
         if game_item.horizontal_coordinate < self.horizontal_coordinate + self.width and game_item.horizontal_coordinate > self.horizontal_coordinate:
-            self.health = self.health -1 
+            self.health = self.health - 1 
             return True
         return False
     def collided(self,game_item):        

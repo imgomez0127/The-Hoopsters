@@ -31,6 +31,7 @@ class Naomi(pygame.sprite.Sprite):
         self.create_jumping_animation()
         self.is_idle = True
         self.facing_right = True
+        self.invul = 0
     
     def create_jumping_animation(self):
         self. jumping_animation = [load(os.path.join("assets/JUMPY",image)) for image in sorted(os.listdir("assets/JUMPY"))]
@@ -87,7 +88,13 @@ class Naomi(pygame.sprite.Sprite):
     def move(self):
         self.horizontal_coordinate = self.horizontal_coordinate + self.speed
 
+    def got_hit(self,game_item):
+        if game_item.horizontal_coordinate < self.horizontal_coordinate + self.width and game_item.horizontal_coordinate > self.horizontal_coordinate and not game_item.vertical_coordinate > self.vertical_coordinate + self.height+self.ground and not self.invul:
+            self.invul = 5
+            self.health = self.health - 1 
+
     def render(self,is_done):
+        self.invul = max(0,self.invul-1)
         render_vector = (self.horizontal_coordinate,(self.vertical_coordinate+self.ground),self.height,self.width)
         if self.is_idle:
             self.render_image = self.idle_image

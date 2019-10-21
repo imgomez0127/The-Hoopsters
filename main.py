@@ -39,7 +39,7 @@ class main:
     def run_game(self):
         game_is_running = True
         while game_is_running:
-            pygame.time.delay(16)
+            pygame.time.delay(30)
             game_is_running = not self.check_if_game_should_exit()
             self.game_is_running = self.check_if_game_should_exit()
             self.win.blit(self.background_image,(0,0))
@@ -48,8 +48,10 @@ class main:
                 self.naomi.react_to_keypress(self.bullets)
                 self.move_bullets()
                 self.check_if_helga_got_hit()
+                self.naomi.got_hit(self.helga)
                 self.helga.render()
-                self.naomi.render(False)
+                if self.naomi.health > 0:
+                    self.naomi.render(False)
                 self.render_bullets()
                 self.remove_bullets()        
             else:
